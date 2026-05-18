@@ -23,8 +23,8 @@ public class Migracao {
                     "valor_total REAL(10,02))");
             conexao.createStatement().execute("CREATE TABLE IF NOT EXISTS item_pedido (" +
                     "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    "id_pedido INT, " +
-                    "id_produto INT, " +
+                    "id_pedido TEXT NOT NULL, " +
+                    "id_produto TEXT  NOT NULL, " +
                     "FOREIGN KEY " +
                     "(id_pedido) " +
                     "REFERENCES pedidos (id), " +

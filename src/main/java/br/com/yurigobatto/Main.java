@@ -14,14 +14,12 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        int opc = 0;
-        Menu menu = new Menu();
-
         try {
             Conexao conexao = Conexao.getInstancia();
+            Scanner scanner = new Scanner(System.in);
             ProdutoService produtoService = new ProdutoService(conexao);
             PedidoService pedidoService = new PedidoService(produtoService, conexao);
+            Menu menu = new Menu(produtoService, pedidoService, scanner);
 
             menu.menu();
 

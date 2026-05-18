@@ -41,10 +41,10 @@ public class PedidoService {
         return pedidos;
     }
 
-    public Pedido encontrar(int numeroPedido) {
-        PreparedStatement statement = conexao.createPreparedStatement("SELECT * FROM pedidos WHERE numero_pedido = ?");
+    public Pedido encontrar(String id) {
+        PreparedStatement statement = conexao.createPreparedStatement("SELECT * FROM pedidos WHERE id = ?");
         try{
-            statement.setInt(1, numeroPedido);
+            statement.setString(1, id);
             ResultSet resultSet = conexao.execute(statement);
             if (!resultSet.next()) {
                 return null;
@@ -82,7 +82,7 @@ public class PedidoService {
             int quantidade = entry.getValue();
 
             Produto produto = produtoService.encontrar(produtoId);
-            if(produto == null) {
+            if(produto != null) {
                 ItemPedido item = new ItemPedido(pedido, produto);
                 item.setQuantidade(quantidade);
                 pedido.addItem(item);
@@ -112,25 +112,24 @@ public class PedidoService {
         }
         return pedido;
     }
-    /*
-    public Pedido adicionarItem(String id, String produtoId, Integer quantidade) {
-        for (int i = 0; i < database.size(); i++) {
-            Pedido pedido = database.get(i);
-            if (!pedido.getId().equals(id))
-                continue;
-            Produto produto = produtoService.encontrar(produtoId);
-            if (produto == null)
-                continue;
-            ItemPedido item = new ItemPedido(pedido, produto);
-            item.setQuantidade(quantidade);
-            pedido.addItem(item);
-            database.set(i, pedido);
-            return pedido;
+
+    public Pedido adicionarItem(String pedidoId, String produtoId, Integer quantidade) {
+        if (encontrar() != null){
+
+            if(){
+
+            }
+            PreparedStatement statement = conexao.createPreparedStatement("INSERT INTO item_pedido " +
+                    "(id_pedido, id_produto) VALUES id_pedido = ?, id_produto = ?");
+            try {
+
+            }catch(Exception e){
+                throw new RuntimeException("Erro ao adicionar item do pedido",e);
+            }
         }
         return null;
     }
-    */
-    /*
+
     public Pedido removerItem(String id, String produtoId) {
         for (int i = 0; i < database.size(); i++) {
             Pedido pedido = database.get(i);
@@ -143,7 +142,6 @@ public class PedidoService {
         }
         return null;
     }
-    */
 
     public boolean excluir(String id) {
         PreparedStatement statement = conexao.createPreparedStatement("DELETE FROM pedidos WHERE id = ?");
