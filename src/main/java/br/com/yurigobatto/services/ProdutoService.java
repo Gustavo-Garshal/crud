@@ -43,7 +43,7 @@ public class ProdutoService {
             statement.setString(1, id);
             ResultSet resultSet = conexao.execute(statement);
             if (!resultSet.next()) {
-                return null;
+                throw  new RuntimeException("Nenhum produto encontrado");
             }
             Produto item = new Produto();
             item.setId(resultSet.getString("id"));

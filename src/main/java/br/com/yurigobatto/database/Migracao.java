@@ -25,6 +25,8 @@ public class Migracao {
                     "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     "id_pedido TEXT NOT NULL, " +
                     "id_produto TEXT  NOT NULL, " +
+                    "qtd INTEGER NOT NULL, " +
+                    "valor REAL NOT NULL)" +
                     "FOREIGN KEY " +
                     "(id_pedido) " +
                     "REFERENCES pedidos (id), " +

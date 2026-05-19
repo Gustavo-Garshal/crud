@@ -100,11 +100,13 @@ public class PedidoService {
             throw new RuntimeException("Erro ao tentar adicionar pedido",e);
         }
         PreparedStatement statementItens = conexao.createPreparedStatement("INSERT INTO item_pedido(" +
-                "id_pedido, id_produto) VALUES (?, ?)");
+                "id_pedido, id_produto, qtd, valor) VALUES (?, ?, ?, ?)");
         try{
             for(ItemPedido item : pedido.getItens()){
                 statementItens.setString(1, item.getPedidoId());
                 statementItens.setString(2, item.getProdutoId());
+                statementItens.setInt(3, item.getQuantidade());
+                statementItens.setBigDecimal(4, item.getValorUnitario());
                 statementItens.execute();
             }
         }catch(Exception e){
@@ -114,17 +116,31 @@ public class PedidoService {
     }
 
     public Pedido adicionarItem(String pedidoId, String produtoId, Integer quantidade) {
-        if (encontrar() != null){
+        if (encontrar(pedidoId) != null){
+            PreparedStatement statement = conexao.createPreparedStatement("SELECT * FROM item_pedidos WHERE id_pedido = ? AND id_produto = ?");
+            try{
+                statement.setString(1, pedidoId);
+                statement.setString(2, produtoId);
+                ResultSet resultSet = conexao.execute(statement);
+                if (!resultSet.next()) {
+                    PreparedStatement statementAdd = conexao.createPreparedStatement("INSERT INTO item_pedido(" +
+                            "id, id_pedido, id_produto, qtd, valor) VALUES (?, ?, ?, ?, ?)");
+                    Produto produto = produtoService.encontrar(produtoId);
+                    try {
+                        statementAdd.setString(1, UUID.randomUUID().toString());
+                        statementAdd.setString(2, pedidoId);
+                        statementAdd.setString(3, produtoId);
+                        statementAdd.setInt(4, quantidade);
+                        statementAdd.setBigDecimal(5, produto.getValorUnitario());
+                        statementAdd.execute();
+                    }catch (SQLException e){
+                        throw new RuntimeException("Erro ao adicionar item do pedido",e);
+                    }
+                    System.out.println("Produto adicionado com sucesso");
+                }
 
-            if(){
-
-            }
-            PreparedStatement statement = conexao.createPreparedStatement("INSERT INTO item_pedido " +
-                    "(id_pedido, id_produto) VALUES id_pedido = ?, id_produto = ?");
-            try {
-
-            }catch(Exception e){
-                throw new RuntimeException("Erro ao adicionar item do pedido",e);
+            }catch (Exception e){
+                throw new RuntimeException("Erro ao adicionar pedido",e);
             }
         }
         return null;
