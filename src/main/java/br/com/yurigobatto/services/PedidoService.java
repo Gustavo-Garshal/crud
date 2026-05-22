@@ -82,11 +82,9 @@ public class PedidoService {
             int quantidade = entry.getValue();
 
             Produto produto = produtoService.encontrar(produtoId);
-            if(produto != null) {
-                ItemPedido item = new ItemPedido(pedido, produto);
-                item.setQuantidade(quantidade);
-                pedido.addItem(item);
-            }
+            ItemPedido item = new ItemPedido(pedido, produto);
+            item.setQuantidade(quantidade);
+            pedido.addItem(item);
         }
         PreparedStatement statement = conexao.createPreparedStatement("INSERT INTO pedidos(" +
                 "id, numero_pedido, cliente, valor_total) VALUES (?, ?, ?, ?)");
@@ -117,11 +115,13 @@ public class PedidoService {
 
     public Pedido adicionarItem(String pedidoId, String produtoId, Integer quantidade) {
         if (encontrar(pedidoId) != null){
-            PreparedStatement statement = conexao.createPreparedStatement("SELECT * FROM item_pedidos WHERE id_pedido = ? AND id_produto = ?");
+            PreparedStatement statement = conexao.createPreparedStatement("SELECT * FROM item_pedido " +
+                    "WHERE id_pedido = ? AND id_produto = ?");
             try{
                 statement.setString(1, pedidoId);
                 statement.setString(2, produtoId);
                 ResultSet resultSet = conexao.execute(statement);
+                //Verifica se já tem o produto no pedido
                 if (!resultSet.next()) {
                     PreparedStatement statementAdd = conexao.createPreparedStatement("INSERT INTO item_pedido(" +
                             "id, id_pedido, id_produto, qtd, valor) VALUES (?, ?, ?, ?, ?)");
@@ -138,14 +138,26 @@ public class PedidoService {
                     }
                     System.out.println("Produto adicionado com sucesso");
                 }
-
+                else {
+                    PreparedStatement statementAtt = conexao.createPreparedStatement("UPDATE item_pedido set " +
+                            "qtd = qtd + ? WHERE id_pedido = ? AND id_produto = ?");
+                    statementAtt.setInt(1, quantidade);
+                    statementAtt.setString(2, pedidoId);
+                    statementAtt.setString(3, produtoId);
+                    statementAtt.execute();
+                    System.out.println("Quantidade adicionada com sucesso");
+                }
             }catch (Exception e){
                 throw new RuntimeException("Erro ao adicionar pedido",e);
             }
+            attValorPedido(pedidoId);
+        }
+        else{
+            throw new RuntimeException("Pedido não encontrado!");
         }
         return null;
     }
-
+/*
     public Pedido removerItem(String id, String produtoId) {
         for (int i = 0; i < database.size(); i++) {
             Pedido pedido = database.get(i);
@@ -157,6 +169,18 @@ public class PedidoService {
             return pedido;
         }
         return null;
+    }
+*/
+    public void attValorPedido(String pedidoId){
+        PreparedStatement statement = conexao.createPreparedStatement("UPDATE pedidos SET valor_total = " +
+                "(SELECT COALESCE(SUM(qtd * valor), 0) FROM item_pedido WHERE id_pedido = ?) WHERE id = ?");
+        try {
+            statement.setString(1, pedidoId);
+            statement.setString(2, pedidoId);
+            statement.execute();
+        }catch (Exception e){
+            throw new RuntimeException("Erro ao atualizar pedido",e);
+        }
     }
 
     public boolean excluir(String id) {

@@ -1,8 +1,12 @@
 package br.com.yurigobatto.services;
 
+import br.com.yurigobatto.entities.ItemPedido;
+import br.com.yurigobatto.entities.Pedido;
 import br.com.yurigobatto.entities.Produto;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 public class Menu {
@@ -39,17 +43,22 @@ public class Menu {
                         System.out.println("Id: " + produto.getId());
                         System.out.println("Nome: " + produto.getNome());
                         System.out.println("Quantidade: " + produto.getQuantidade());
-                        System.out.println("Preco: " + produto.getValorUnitario() + "\n");
+                        System.out.println("Preco: " + produto.getValorUnitario());
                     }
                     break;
                 case 2:
                     System.out.print("Digite o Id do Produto: ");
                     idProduto =  scanner.next();
-                    produtoService.encontrar(idProduto);
+                    Produto produto = produtoService.encontrar(idProduto);
+                        System.out.println("Id do Produto: " + idProduto);
+                        System.out.println("Nome: " + produto.getNome());
+                        System.out.println("Quantidade: " + produto.getQuantidade());
+                        System.out.println("Preco: " + produto.getValorUnitario());
                     break;
                 case 3:
+                    scanner.nextLine();
                     System.out.print("Digite o nome do produto: ");
-                    nome = scanner.next();
+                    nome = scanner.nextLine();
                     System.out.print("Digite o quantidade do produto: ");
                     quantidade = scanner.nextInt();
                     System.out.println("Digite o valor do produto: ");
@@ -58,10 +67,11 @@ public class Menu {
                     System.out.println("Produto criado com sucesso!");
                     break;
                 case 4:
+                    scanner.nextLine();
                     System.out.print("Digite o Id do Produto: ");
                     idProduto = scanner.next();
                     System.out.println("Digite o nome do produto: ");
-                    nome = scanner.next();
+                    nome = scanner.nextLine();
                     System.out.println("Digite o quantidade do produto: ");
                     quantidade = scanner.nextInt();
                     System.out.println("Digite o valor do produto: ");
@@ -73,9 +83,9 @@ public class Menu {
                     System.out.print("Digite o Id do Produto: ");
                     idProduto =  scanner.next();
                     produtoService.excluir(idProduto);
+                    System.out.println("Produto excluido com sucesso!");
                     break;
                 case 6:
-                    menu();
                     break;
             }
         }while(opc != 6);
@@ -83,8 +93,73 @@ public class Menu {
 
     public void menuPedidos(){
         do {
+            System.out.println("" +
+                    "------Menu------\n" +
+                    "1 - Lista Pedidos\n" +
+                    "2 - Buscar Pedido\n" +
+                    "3 - Gerar Pedido\n" +
+                    "4 - Adicionar Item ao Pedido\n" +
+                    "5 - Remover Item do Pedido\n" +
+                    "6 - Excluir Pedido\n" +
+                    "7 - Voltar");
+            opc = scanner.nextInt();
+            String pedidoId;
+            String produtoId;
+            int quantidade;
+            String cliente;
 
-        }while(opc != 6);
+            switch (opc) {
+                case 1:
+                    for (Pedido pedido : pedidoService.listar()) {
+                        System.out.println("Id: " + pedido.getId());
+                        System.out.println("Numero do pedido: " + pedido.getNumeroPedido());
+                        System.out.println("Cliente: " + pedido.getCliente());
+                        System.out.println("Valor do pedido: " + pedido.getValorTotal());
+                    }
+                    break;
+                case 2:
+                    System.out.print("Digite o Id do Pedido: ");
+                    pedidoId = scanner.next();
+                    Pedido pedido = pedidoService.encontrar(pedidoId);
+                    System.out.println("Id do Pedido: " + pedidoId);
+                    System.out.println("Numero do pedido: " + pedido.getNumeroPedido());
+                    System.out.println("Cliente: " + pedido.getCliente());
+                    System.out.println("Valor do pedido: " + pedido.getValorTotal());
+                    System.out.println("Itens:");
+                    for (ItemPedido item : pedido.getItens()) {
+                        System.out.println("Produto ID: " + item.getProdutoId() + "\n" +
+                                "Quantidade: " + item.getQuantidade() + "\n" +
+                                "Subtotal: " + item.getValorTotal());
+                    }
+                    break;
+                case 3:
+                    scanner.nextLine();
+                    System.out.print("Cliente: ");
+                    cliente = scanner.nextLine();
+                    Map<String, Integer> listaProdutos = new HashMap<>();
+                    String continua = "s";
+                    while (continua.equals("s")) {
+                        System.out.println("Digite o ID do Produto: ");
+                        produtoId = scanner.nextLine();
+                        System.out.println("Digite o quantidade do Produto: ");
+                        quantidade = scanner.nextInt();
+                        listaProdutos.put(produtoId, quantidade);
+                        System.out.println("Deseja adicionar mais algum produto? (s/n)");
+                        continua = scanner.next();
+                    }
+                    pedidoService.criar(cliente, listaProdutos);
+                    System.out.println("Produto adicionado com sucesso!");
+                    break;
+                case 4:
+                    scanner.nextLine();
+                    System.out.println("Digite o ID do Pedido: ");
+                    pedidoId = scanner.next();
+                    System.out.println("Digite o ID do Produto: ");
+                    System.out.println("Digite o quantidade do Pedido: ");
+                case 7:
+                    break;
+            }
+        }while(opc != 7);
     }
 
     public void menu(){

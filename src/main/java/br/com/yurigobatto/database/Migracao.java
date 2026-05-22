@@ -15,24 +15,24 @@ public class Migracao {
                     "id TEXT PRIMARY KEY, " +
                     "nome TEXT(60) NOT NULL, " +
                     "qtd INTEGER NOT NULL, " +
-                    "valor REAL NOT NULL)");
+                    "valor REAL NOT NULL);");
             conexao.createStatement().execute("CREATE TABLE IF NOT EXISTS pedidos (" +
                     "id TEXT PRIMARY KEY, " +
                     "numero_pedido INT DEFAULT 0, " +
                     "cliente TEXT(60), " +
-                    "valor_total REAL(10,02))");
+                    "valor_total REAL(10,02));");
             conexao.createStatement().execute("CREATE TABLE IF NOT EXISTS item_pedido (" +
                     "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     "id_pedido TEXT NOT NULL, " +
                     "id_produto TEXT  NOT NULL, " +
                     "qtd INTEGER NOT NULL, " +
-                    "valor REAL NOT NULL)" +
+                    "valor REAL NOT NULL," +
                     "FOREIGN KEY " +
                     "(id_pedido) " +
                     "REFERENCES pedidos (id), " +
                     "FOREIGN KEY " +
                     "(id_produto) " +
-                    "REFERENCES produtos (id))");
+                    "REFERENCES produtos (id));");
         } catch (Exception e) {
             e.printStackTrace();
         }
