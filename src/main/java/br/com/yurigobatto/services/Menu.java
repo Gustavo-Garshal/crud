@@ -43,7 +43,7 @@ public class Menu {
                         System.out.println("Id: " + produto.getId());
                         System.out.println("Nome: " + produto.getNome());
                         System.out.println("Quantidade: " + produto.getQuantidade());
-                        System.out.println("Preco: " + produto.getValorUnitario());
+                        System.out.println("Preco: " + produto.getValorUnitario() + "\n");
                     }
                     break;
                 case 2:
@@ -61,7 +61,7 @@ public class Menu {
                     nome = scanner.nextLine();
                     System.out.print("Digite o quantidade do produto: ");
                     quantidade = scanner.nextInt();
-                    System.out.println("Digite o valor do produto: ");
+                    System.out.print("Digite o valor do produto: ");
                     valorUnitario = scanner.nextBigDecimal();
                     produtoService.criar(nome, quantidade, valorUnitario);
                     System.out.println("Produto criado com sucesso!");
@@ -70,11 +70,11 @@ public class Menu {
                     scanner.nextLine();
                     System.out.print("Digite o Id do Produto: ");
                     idProduto = scanner.next();
-                    System.out.println("Digite o nome do produto: ");
-                    nome = scanner.nextLine();
-                    System.out.println("Digite o quantidade do produto: ");
+                    System.out.print("Digite o nome do produto: ");
+                    nome = scanner.next();
+                    System.out.print("Digite o quantidade do produto: ");
                     quantidade = scanner.nextInt();
-                    System.out.println("Digite o valor do produto: ");
+                    System.out.print("Digite o valor do produto: ");
                     valorUnitario = scanner.nextBigDecimal();
                     produtoService.atualizar(idProduto, nome, quantidade, valorUnitario);
                     System.out.println("Produto atualizado com sucesso!");
@@ -114,23 +114,23 @@ public class Menu {
                         System.out.println("Id: " + pedido.getId());
                         System.out.println("Numero do pedido: " + pedido.getNumeroPedido());
                         System.out.println("Cliente: " + pedido.getCliente());
-                        System.out.println("Valor do pedido: " + pedido.getValorTotal());
+                        System.out.println("Valor do pedido: " + pedido.getValorTotal() + "\n");
                     }
                     break;
                 case 2:
                     System.out.print("Digite o Id do Pedido: ");
                     pedidoId = scanner.next();
                     Pedido pedido = pedidoService.encontrar(pedidoId);
-                    System.out.println("Id do Pedido: " + pedidoId);
-                    System.out.println("Numero do pedido: " + pedido.getNumeroPedido());
-                    System.out.println("Cliente: " + pedido.getCliente());
-                    System.out.println("Valor do pedido: " + pedido.getValorTotal());
-                    System.out.println("Itens:");
+                        System.out.println("Id do Pedido: " + pedidoId);
+                        System.out.println("Numero do pedido: " + pedido.getNumeroPedido());
+                        System.out.println("Cliente: " + pedido.getCliente());
+                        System.out.println("Valor do pedido: " + pedido.getValorTotal());
+                       /* System.out.println("Itens:");
                     for (ItemPedido item : pedido.getItens()) {
                         System.out.println("Produto ID: " + item.getProdutoId() + "\n" +
                                 "Quantidade: " + item.getQuantidade() + "\n" +
                                 "Subtotal: " + item.getValorTotal());
-                    }
+                    }*/
                     break;
                 case 3:
                     scanner.nextLine();
@@ -139,9 +139,9 @@ public class Menu {
                     Map<String, Integer> listaProdutos = new HashMap<>();
                     String continua = "s";
                     while (continua.equals("s")) {
-                        System.out.println("Digite o ID do Produto: ");
-                        produtoId = scanner.nextLine();
-                        System.out.println("Digite o quantidade do Produto: ");
+                        System.out.print("Digite o ID do Produto: ");
+                        produtoId = scanner.next();
+                        System.out.print("Digite o quantidade do Produto: ");
                         quantidade = scanner.nextInt();
                         listaProdutos.put(produtoId, quantidade);
                         System.out.println("Deseja adicionar mais algum produto? (s/n)");
@@ -152,10 +152,28 @@ public class Menu {
                     break;
                 case 4:
                     scanner.nextLine();
+                    System.out.print("Digite o ID do Pedido: ");
+                    pedidoId = scanner.next();
+                    System.out.print("Digite o ID do Produto: ");
+                    produtoId = scanner.next();
+                    System.out.print("Digite o quantidade do Pedido: ");
+                    quantidade = scanner.nextInt();
+                    pedidoService.adicionarItem(pedidoId, produtoId, quantidade);
+                    break;
+                case 5:
+                    scanner.nextLine();
                     System.out.println("Digite o ID do Pedido: ");
                     pedidoId = scanner.next();
                     System.out.println("Digite o ID do Produto: ");
-                    System.out.println("Digite o quantidade do Pedido: ");
+                    produtoId = scanner.next();
+                    pedidoService.removerItem(pedidoId, produtoId);
+                    break;
+                case 6:
+                    scanner.nextLine();
+                    System.out.print("Digite o ID do Pedido: ");
+                    pedidoId = scanner.next();
+                    pedidoService.excluir(pedidoId);
+                    break;
                 case 7:
                     break;
             }

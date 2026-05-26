@@ -44,6 +44,10 @@ public class Pedido {
         return valorTotal;
     }
 
+    public void setValorTotal(BigDecimal valorTotal) {
+        this.valorTotal = valorTotal;
+    }
+
     public List<ItemPedido> getItens() {
         return itens;
     }

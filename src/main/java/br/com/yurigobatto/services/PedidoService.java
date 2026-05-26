@@ -33,6 +33,7 @@ public class PedidoService {
                 item.setId(resultSet.getString("id"));
                 item.setNumeroPedido(resultSet.getInt("numero_pedido"));
                 item.setCliente(resultSet.getString("cliente"));
+                item.setValorTotal(resultSet.getBigDecimal("valor_total"));
                 pedidos.add(item);
             }
         } catch (SQLException e) {
@@ -53,6 +54,7 @@ public class PedidoService {
             item.setId(resultSet.getString("id"));
             item.setNumeroPedido(resultSet.getInt("numero_pedido"));
             item.setCliente(resultSet.getString("cliente"));
+            item.setValorTotal(resultSet.getBigDecimal("valor_total"));
             return item;
         } catch (Exception e) {
             throw new RuntimeException("Erro ao buscar pedido",e);
@@ -157,20 +159,24 @@ public class PedidoService {
         }
         return null;
     }
-/*
-    public Pedido removerItem(String id, String produtoId) {
-        for (int i = 0; i < database.size(); i++) {
-            Pedido pedido = database.get(i);
-            if (!pedido.getId().equals(id))
-                continue;
-            pedido.getItens()
-                    .removeIf(item -> item.getProdutoId().equals(produtoId));
-            database.set(i, pedido);
-            return pedido;
+
+    public Pedido removerItem(String pedidoId, String produtoId) {
+        if(encontrar(pedidoId) != null) {
+            PreparedStatement statement = conexao.createPreparedStatement("DELETE FROM item_pedido WHERE id_pedido = ? AND id_produto = ?");
+            try{
+                statement.setString(1, pedidoId);
+                statement.setString(2, produtoId);
+                statement.execute();
+
+                attValorPedido(pedidoId);
+                System.out.println("Item removido com sucesso");
+            }catch (Exception e){
+                throw new RuntimeException("Erro ao remover item do pedido",e);
+            }
         }
         return null;
     }
-*/
+
     public void attValorPedido(String pedidoId){
         PreparedStatement statement = conexao.createPreparedStatement("UPDATE pedidos SET valor_total = " +
                 "(SELECT COALESCE(SUM(qtd * valor), 0) FROM item_pedido WHERE id_pedido = ?) WHERE id = ?");
@@ -184,11 +190,21 @@ public class PedidoService {
     }
 
     public boolean excluir(String id) {
+        PreparedStatement statementItem = conexao.createPreparedStatement("DELETE FROM item_pedido WHERE id_pedido = ?");
+        try {
+            statementItem.setString(1, id);
+            statementItem.execute();
+        }catch (Exception e){
+            throw new RuntimeException("Erro ao excluir pedido",e);
+        }
         PreparedStatement statement = conexao.createPreparedStatement("DELETE FROM pedidos WHERE id = ?");
         try {
             statement.setString(1, id);
+            statement.execute();
         } catch (SQLException e) {
             throw new RuntimeException("Erro ao tentar excluir",e);
-        }return true;
+        }
+        System.out.println("Pedido excluido com sucesso");
+        return true;
     }
 }

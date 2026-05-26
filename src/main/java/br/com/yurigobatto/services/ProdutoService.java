@@ -83,7 +83,7 @@ public class ProdutoService {
         produto.setQuantidade(quantidade);
         produto.setValorUnitario(valorUnitario);
 
-        PreparedStatement statement = conexao.createPreparedStatement("UPDATE produtos SET nome = ?, qtd = ?, valor = ? WHERE id = ?)");
+        PreparedStatement statement = conexao.createPreparedStatement("UPDATE produtos SET nome = ?, qtd = ?, valor = ? WHERE id = ?");
         try {
             statement.setString(1, produto.getNome());
             statement.setInt(2, produto.getQuantidade());
