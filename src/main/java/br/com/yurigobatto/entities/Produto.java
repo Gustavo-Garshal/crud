@@ -1,9 +1,12 @@
 package br.com.yurigobatto.entities;
 
+import br.com.yurigobatto.orm.Entidade;
+import br.com.yurigobatto.orm.annotation.Id;
+
 import java.math.BigDecimal;
 
-public class Produto {
-
+public class Produto extends Entidade {
+    @Id
     private String id;
     private String nome;
     private Integer quantidade;

@@ -1,6 +1,8 @@
 package br.com.yurigobatto.services;
 
 import br.com.yurigobatto.database.Conexao;
+import br.com.yurigobatto.dto.ItemPedidoDto;
+import br.com.yurigobatto.dto.PedidoDto;
 import br.com.yurigobatto.entities.ItemPedido;
 import br.com.yurigobatto.entities.Pedido;
 import br.com.yurigobatto.entities.Produto;
@@ -74,18 +76,16 @@ public class PedidoService {
         return 0;
     }
 
-    public Pedido criar(String cliente, Map<String, Integer> produtos) {
+    public Pedido criar(PedidoDto dto) {
         Pedido pedido = new Pedido();
         pedido.setId(UUID.randomUUID().toString());
         pedido.setNumeroPedido(ultimoPedido() + 1);
-        pedido.setCliente(cliente);
-        for(Map.Entry<String, Integer> entry : produtos.entrySet()){
-            String produtoId = entry.getKey();
-            int quantidade = entry.getValue();
+        pedido.setCliente(dto.getCliente());
+        for(ItemPedidoDto itemDto : dto.getItens()){
 
-            Produto produto = produtoService.encontrar(produtoId);
+            Produto produto = produtoService.encontrar(itemDto.produtoId());
             ItemPedido item = new ItemPedido(pedido, produto);
-            item.setQuantidade(quantidade);
+            item.setQuantidade(itemDto.quantidade());
             pedido.addItem(item);
         }
         PreparedStatement statement = conexao.createPreparedStatement("INSERT INTO pedidos(" +

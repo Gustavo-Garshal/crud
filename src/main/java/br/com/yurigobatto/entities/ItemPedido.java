@@ -1,8 +1,10 @@
 package br.com.yurigobatto.entities;
 
+import br.com.yurigobatto.orm.Entidade;
+
 import java.math.BigDecimal;
 
-public class ItemPedido {
+public class ItemPedido extends Entidade {
 
     private final String pedidoId;
     private final String produtoId;

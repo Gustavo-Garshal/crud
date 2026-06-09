@@ -1,6 +1,7 @@
 package br.com.yurigobatto.services;
 
 import br.com.yurigobatto.database.Conexao;
+import br.com.yurigobatto.dto.ProdutoDto;
 import br.com.yurigobatto.entities.Produto;
 
 import java.math.BigDecimal;
@@ -56,12 +57,12 @@ public class ProdutoService {
         }
     }
 
-    public Produto criar(String nome, Integer quantidade, BigDecimal valorUnitario) {
+    public Produto criar(ProdutoDto dto) {
         Produto produto = new Produto();
         produto.setId(UUID.randomUUID().toString());
-        produto.setNome(nome);
-        produto.setQuantidade(quantidade);
-        produto.setValorUnitario(valorUnitario);
+        produto.setNome(dto.getNome());
+        produto.setQuantidade(dto.getQuantidade());
+        produto.setValorUnitario(dto.getValorUnitario());
 
         PreparedStatement statement = conexao.createPreparedStatement("INSERT INTO produtos VALUES (?, ?, ?, ?)");
         try {
@@ -76,12 +77,12 @@ public class ProdutoService {
         }
     }
 
-    public Produto atualizar(String id, String nome, Integer quantidade, BigDecimal valorUnitario) {
+    public Produto atualizar(String id, ProdutoDto dto) {
         Produto produto = new Produto();
         produto.setId(id);
-        produto.setNome(nome);
-        produto.setQuantidade(quantidade);
-        produto.setValorUnitario(valorUnitario);
+        produto.setNome(dto.getNome());
+        produto.setQuantidade(dto.getQuantidade());
+        produto.setValorUnitario(dto.getValorUnitario());
 
         PreparedStatement statement = conexao.createPreparedStatement("UPDATE produtos SET nome = ?, qtd = ?, valor = ? WHERE id = ?");
         try {

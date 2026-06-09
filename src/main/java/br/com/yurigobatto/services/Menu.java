@@ -1,5 +1,8 @@
 package br.com.yurigobatto.services;
 
+import br.com.yurigobatto.dto.ItemPedidoDto;
+import br.com.yurigobatto.dto.PedidoDto;
+import br.com.yurigobatto.dto.ProdutoDto;
 import br.com.yurigobatto.entities.ItemPedido;
 import br.com.yurigobatto.entities.Pedido;
 import br.com.yurigobatto.entities.Produto;
@@ -63,7 +66,7 @@ public class Menu {
                     quantidade = scanner.nextInt();
                     System.out.print("Digite o valor do produto: ");
                     valorUnitario = scanner.nextBigDecimal();
-                    produtoService.criar(nome, quantidade, valorUnitario);
+                    produtoService.criar(new ProdutoDto(nome, quantidade, valorUnitario));
                     System.out.println("Produto criado com sucesso!");
                     break;
                 case 4:
@@ -76,7 +79,7 @@ public class Menu {
                     quantidade = scanner.nextInt();
                     System.out.print("Digite o valor do produto: ");
                     valorUnitario = scanner.nextBigDecimal();
-                    produtoService.atualizar(idProduto, nome, quantidade, valorUnitario);
+                    produtoService.atualizar(idProduto, new ProdutoDto(nome, quantidade, valorUnitario));
                     System.out.println("Produto atualizado com sucesso!");
                     break;
                 case 5:
@@ -136,18 +139,18 @@ public class Menu {
                     scanner.nextLine();
                     System.out.print("Cliente: ");
                     cliente = scanner.nextLine();
-                    Map<String, Integer> listaProdutos = new HashMap<>();
                     String continua = "s";
                     while (continua.equals("s")) {
                         System.out.print("Digite o ID do Produto: ");
                         produtoId = scanner.next();
                         System.out.print("Digite o quantidade do Produto: ");
                         quantidade = scanner.nextInt();
-                        listaProdutos.put(produtoId, quantidade);
                         System.out.println("Deseja adicionar mais algum produto? (s/n)");
                         continua = scanner.next();
+                        Produto produto = produtoService.encontrar(produtoId);
+                        pedidoService.criar(new PedidoDto(cliente)
+                                .addItem(new ItemPedidoDto(produto.getId(), quantidade)));
                     }
-                    pedidoService.criar(cliente, listaProdutos);
                     System.out.println("Produto adicionado com sucesso!");
                     break;
                 case 4:

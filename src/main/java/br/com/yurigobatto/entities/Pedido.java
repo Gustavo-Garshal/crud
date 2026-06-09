@@ -1,11 +1,14 @@
 package br.com.yurigobatto.entities;
 
+import br.com.yurigobatto.orm.Entidade;
+import br.com.yurigobatto.orm.annotation.Id;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Pedido {
-
+public class Pedido extends Entidade {
+    @Id
     private String id;
     private int numeroPedido;
     private String cliente;
